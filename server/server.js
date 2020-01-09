@@ -13,20 +13,15 @@ const triviaRouter = require('./routes/trivia');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded( {extended: true} ));
 app.use(cookieParser());
-// app.get('/api', (req, res) => {
-//   res.send('hi');
-// });
 
 app.use('/signup', signupRouter);
-
 app.use('/profile', profileRouter);
 app.use('/trivia', triviaRouter);
-
 app.use('/', loginRouter);
 
-// app.get('/', (req, res) => {
-//   res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
-// });
+app.get('/', (req, res) => {
+  res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
+});
 
 app.get('/build/bundle.js', (req, res) => {
   res.status(200).sendFile(path.resolve(__dirname, '../build/bundle.js'));
