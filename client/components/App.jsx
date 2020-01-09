@@ -200,7 +200,6 @@ class App extends Component {
           <React.Fragment>
             <UserInfo username={this.state.username} gameMode={this.state.gameMode} />
             <Stats username={this.state.username} stats={this.state.stats} correctResponses={this.state.correctResponses} gameMode={this.state.gameMode} />
-
             <select className="custom-select" onChange={this.onHandleClick}>
               <option value="9" className="topicButton">General Knowledge</option>
               <option value="10"> Books</option>
