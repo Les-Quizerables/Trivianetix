@@ -5,7 +5,7 @@ class UserInfo extends Component {
     const username = this.props.username;
     return (
       <div>
-        <h1 className="header-tag">Welcome back {this.props.username}!</h1>
+        <h1 className="header-tag">Welcome back {username}!</h1>
       </div>
     );
   }

@@ -181,7 +181,7 @@ userModelController.getGraphData = async(req, res, next) => {
     await db.query(sql)
     .then(resp => {
       count = Number(resp.rows[0].count);
-      console.log('in second query count =', count)
+      // console.log('in second query count =', count)
       // Case no games played in that category
       if (count === 0) {
         obj[category] = 0        
@@ -194,7 +194,7 @@ userModelController.getGraphData = async(req, res, next) => {
      obj1[education[j]] = obj;    
   }
   res.locals.users = obj1;
-  console.log("currentuser: ",res.locals.currentuser, "users: ", res.locals.users);
+  // console.log("currentuser: ",res.locals.currentuser, "users: ", res.locals.users);
   return next();
 };
 

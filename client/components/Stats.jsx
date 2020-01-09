@@ -13,13 +13,9 @@ class Stats extends Component {
     };
   }
   componentDidMount() {
-<<<<<<< HEAD
-    fetch(`/trivia/${this.props.username}`)
-=======
     fetch('/profile/getLeaders')
     .then(res => res.json())
     .then(data => {
-      console.log('stats data from sql: ', data);
       this.setState({
         rankings: data.rankings,
         usernames: data.usernames,
@@ -29,7 +25,6 @@ class Stats extends Component {
     });
 
     fetch(`/Trivia/${this.props.username}`)
->>>>>>> 2ce28c103e5d1333a1029ba200c942de06beb843
     .then(res => res.json())
     .then((res)=> {
       // Constructing data of graph 
@@ -102,7 +97,7 @@ class Stats extends Component {
     //     "field3":10,
     //   }];
     //   this.drawChart(models)})
-    .catch(err => console.log(err))
+    .catch(err => console.log(err));
 
     // fetch(`/getGraphData/${chosentopic}/HighSchool`)
     // .then(res => res.json)
@@ -111,12 +106,6 @@ class Stats extends Component {
     // fetch(`/getGraphData/${chosentopic}/PHD`)
     // .then(res => res.json)
     // .catch(err => console.log(err))
-
-   
-
-
-   
-
   }
   drawChart(data, data2) {
     let models = data;
@@ -138,12 +127,9 @@ class Stats extends Component {
     // lineData.push({date:new Date('December 27, 1995 03:24:00'), nps:93});
     // lineData.push({date:new Date('December 28, 1995 03:24:00'), nps:81});
     
-    
     // lineData.sort(function(a,b){
     //     return new Date(b.date) - new Date(a.date);
     // });
-    
-    
     
     var height  = 600;
     var width   = 700;
@@ -330,15 +316,36 @@ class Stats extends Component {
     let gameMode = this.props.gameMode;
     let graph = <div id='graph'></div>;
     let scoreBoard = <p>Your All-Time Score: {percentageRight}%<br/>Your Score For This Game: {PercentageRightForThisGame}%</p>;
-    console.log(`questionsPosed: ${questionsPosed}, questionsRight: ${questionsRight}, percentageRight: ${percentageRight}, PercentageRightForThisGame: ${PercentageRightForThisGame}`);
+    // console.log(`questionsPosed: ${questionsPosed}, questionsRight: ${questionsRight}, percentageRight: ${percentageRight}, PercentageRightForThisGame: ${PercentageRightForThisGame}`);
     
+    const categoryMap = {
+      9: 'General Knowledge',
+      10: 'Books',
+      11: 'Film',
+      12: 'Music',
+      13: 'Musicals and Theater',
+      14: 'Television',
+      15: 'Video Games',
+      16: 'Board Games',
+      17: 'Science and Nature',
+      18: 'Computers',
+      19: 'Mathematics',
+      20: 'Mythology',
+      21: 'Sports',
+      22: 'Geography',
+      23: 'History',
+      24: 'Politics',
+      25: 'Art',
+      26: 'Celebrities',
+      27: 'Animals'
+    };
     const leaderBoard = [];
     for (let i = 0; i <= 10; i += 1) {
       let eachLeader = (
         <tr>
           <td>{this.state.rankings[i]}</td>
           <td>{this.state.usernames[i]}</td>
-          <td>{this.state.categories[i]}</td>
+          <td>{categoryMap[this.state.categories[i]]}</td>
           <td>{this.state.scores[i]}</td>
         </tr>
       );
@@ -356,12 +363,12 @@ class Stats extends Component {
             <thead>
               <tr>
                 <th>Ranking</th>
-                <th>Username     </th>
-                <th>Categories     </th>
+                <th>Username</th>
+                <th>Category</th>
                 <th>Score</th>
               </tr>
             </thead>
-            <tbody id='tableBody'>
+            <tbody>
               {leaderBoard}
             </tbody>
           </Table>
