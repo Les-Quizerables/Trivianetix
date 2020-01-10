@@ -36,6 +36,7 @@
     "react-bootstrap": "^1.0.0-beta.16",
     "react-dom": "^16.12.0",
     "react-dropdown-button": "^1.0.11",
+    "react-responsive-carousel": "^3.1.51",
     "reactstrap": "^8.2.0",
     "webpack": "^4.41.5"
   },
