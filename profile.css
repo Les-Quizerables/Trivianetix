@@ -119,14 +119,51 @@ select {
   font-family: 'Luckiest Guy', cursive;
 }
 
+
 .custom-select:hover{
   box-shadow: inset 0 1px rgba(255,255,255,0.2), inset 0 20px 30px rgba(99,64,86,0.5);
   font-weight: bolder;
   font-size: 23px;
 }
 
-.center {
-  font-family: 'Luckiest Guy'
+thead {
+  font-family: 'Luckiest Guy';
+  border: 3px solid rgb(255, 255, 255);
+
+}
+
+td {
+  margin-bottom: 0;overflow: hidden;box-sizing: border-box;padding: 15px 20px;border-top: 1px solid black;
+}
+
+.leaderboard {
+  font-family: 'Luckiest Guy';
+  font-size: 20px;
+  color:rgb(255, 255, 255);
+  height: auto;
+  width: auto;
+}
+
+
+
+tr:hover{
+  box-shadow: inset 0 1px yellow, inset 0 20px 30px rgb(206, 52, 5);
+  font-weight: bolder;
+  font-size: 40px;
+}
+
+.center{
+  height: 400px;
+  width: 500px;
+  padding: 20px;
+  text-align: center;
+  position: absolute;
+  background: url(https://ae01.alicdn.com/kf/HTB1.N60SXXXXXcRXpXXq6xXFXXXK/10x10FT-Dark-Orange-Chocolate-Wooden-Wall-Wood-Props-Custom-Backgrounds-Photography-Studio-Backdrops-Digital-Prints-Vinyl.jpg_640x640q70.jpg);
+  top: 50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10%;
+  box-shadow: 0 10px 2px rgba(0,0,0,0.3);
 }
 
 
@@ -360,7 +397,7 @@ select {
 
     img {
       max-width: 40%;
-      max-height: 40%;
+      max-height: 100%;
     }
     
     .carousel .thumb img{
@@ -369,7 +406,6 @@ select {
     }
     .carousel {
       width: auto;
-      max-height: 550px;
+      max-height: 620px;
       background-color: transparent;
-    
     }
