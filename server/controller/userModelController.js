@@ -221,7 +221,7 @@ userModelController.getGraphData2 = async(req, res, next) => {
 userModelController.findLeaders = (req, res, next) => {
   const text = `
   SELECT *
-  FROM leaderboard ORDER BY id
+  FROM leaderboard ORDER BY score desc
   `;
   db.query(text)
     .then (response =>{
@@ -234,7 +234,7 @@ userModelController.findLeaders = (req, res, next) => {
         usernames.push(row.username_fk);
         categories.push(row.category_fk);
         scores.push(row.score);
-        ranks.push(row.id);
+        ranks.push(i + 1);
       }
       res.locals.usernames = usernames;
       res.locals.categories = categories;

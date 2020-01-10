@@ -411,3 +411,11 @@ tr:hover{
       max-height: 550px;
       background-color: transparent;
     }
+
+    .messageLabel{
+      font-family: "Luckiest Guy";
+    }
+
+  #messages{
+      font-family: 'Luckiest Guy';
+    }

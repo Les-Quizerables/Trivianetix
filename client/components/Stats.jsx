@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
 import Table from 'react-bootstrap/Table';
+import io from 'socket.io-client';
+import { timeThursdays } from "d3";
+let socket;
+const endpoint = "localhost:3000";
 import { Carousel } from 'react-responsive-carousel';
 
 class Stats extends Component {
@@ -10,8 +14,12 @@ class Stats extends Component {
       rankings: [],
       usernames: [],
       categories: [],
-      scores: []
+      scores: [],
+      messages: [],
+      message: ''
     };
+    this.startChatting = this.startChatting.bind(this);
+    this.saveCurrMsg = this.saveCurrMsg.bind(this);
   }
   componentDidMount() {
     fetch('/profile/getLeaders')
@@ -330,7 +338,28 @@ class Stats extends Component {
 
   }
 
+  startChatting(message) {
+    console.log('message from startChatting', message);
+    socket.emit('chat messages', message);
+  }
+
+  saveCurrMsg(e) {
+    console.log('e.target.value', e.target.value);
+    this.setState({
+      message: e.target.value
+    });
+  }
+
   render() {
+    if (!socket) {
+      socket = io(endpoint);
+      socket.on('chat messages', message => {
+        console.log('message got: ', message);
+        this.setState(prevState => {
+          return { messages: [...prevState.messages, message] };
+        });
+      })
+    }
     const questionsPosed = this.props.stats.gamesPlayed * 10;
     const questionsRight = this.props.stats.correctAnswers;
     const PercentageRightForThisGame = this.props.correctResponses.length * 10;
@@ -374,6 +403,13 @@ class Stats extends Component {
       );
       leaderBoard.push(eachLeader);
     }
+    const allMsg = [];
+    console.log('this.state.messages: ', this.state.messages);
+    for (let i = 0; i < this.state.messages.length; i += 1) {
+      console.log('this.state.messages[i]', this.state.messages[i]);
+      allMsg.push(<li>{this.state.messages[i]}</li>);
+    }
+    console.log('allMsg: ', allMsg);
 
 
 
@@ -412,7 +448,17 @@ class Stats extends Component {
         <div className='scoreboard'>
           {scoreBoard}
         </div>
-      </div >
+        {/* <ul>
+          <li>Hey</li>
+          {this.state.messages.map(message => <li>{message}</li>)}
+        </ul> */}
+        {allMsg}
+        <label className="messageLabel">
+          Message:
+          <input type="text" name="name" onChange={this.saveCurrMsg} />
+        </label>
+        <button onClick={() => this.startChatting(this.state.message)}>Submit</button>
+      </div>
     );
   }
 }
