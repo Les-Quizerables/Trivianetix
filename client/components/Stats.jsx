@@ -356,7 +356,7 @@ class Stats extends Component {
       socket.on('chat messages', message => {
         console.log('message got: ', message);
         this.setState(prevState => {
-          return {messages: [...prevState.messages, message]};
+          return { messages: [...prevState.messages, message] };
         });
       })
     }
@@ -453,7 +453,7 @@ class Stats extends Component {
           {this.state.messages.map(message => <li>{message}</li>)}
         </ul> */}
         {allMsg}
-        <label>
+        <label className="messageLabel">
           Message:
           <input type="text" name="name" onChange={this.saveCurrMsg} />
         </label>
