@@ -161,7 +161,7 @@ class Stats extends Component {
     let width = 700;
     let hEach = 40;
 
-    let margin = { top: 120, right: 25, bottom: 125, left: 25 };
+    let margin = { top: 50, right: 25, bottom: 125, left: 25 };
 
     width = width - margin.left - margin.right;
     height = height - margin.top - margin.bottom;
@@ -234,19 +234,19 @@ class Stats extends Component {
       .attr("fill", "black")
       .text(function (d) { return d.nps; });
 
-    svg.append('text')
-      .attr('x', 10)
-      .attr('y', -30)
-      .text('Your Scores Over Time')
-      .attr("fill", "black");
+    // svg.append('text')
+    //   .attr('x', 10)
+    //   .attr('y', -30)
+    //   .text('Your Scores Over Time')
+    //   .attr("fill", "black");
 
 
     //NEW GRAPH
 
-    let container = d3.select('#graph'),
+    let container = d3.select('#graph2'),
       width2 = 920,
       height2 = 600,
-      margin2 = { top: 130, right: 120, bottom: 130, left: 150 },
+      margin2 = { top: 100, right: 120, bottom: 130, left: 150 },
       barPadding = .2,
       axisTicks = { qty: 5, outerSize: 0, dateFormat: '%m-%d' };
     let svg2 = container
@@ -326,6 +326,8 @@ class Stats extends Component {
     svg2.append("text").attr("x", 0).attr("y", -70).text(`Gametype: ${categories[0]}`).style("font-size", "15px").style("fill", "blue").attr("alignment-baseline", "middle").style("font", "20px times");
     svg2.append("text").attr("x", 0).attr("y", -50).text(`Gametype: ${categories[1]}`).style("font-size", "15px").style("fill", "red").attr("alignment-baseline", "middle").style("font", "20px times");
     svg2.append("text").attr("x", 0).attr("y", -30).text(`Gametype: ${categories[2]}`).style("font-size", "15px").style("fill", "green").attr("alignment-baseline", "middle").style("font", "20px times");
+    // svg2.append("text").attr("x", 100).attr("y", -70).text("Your Best 3 Categories Compared to Other Users").style("fill", "black").attr("alignment-baseline", "middle").style("font", "30px times");
+
   }
 
   render() {
@@ -335,6 +337,7 @@ class Stats extends Component {
     const percentageRight = questionsPosed ? Math.floor((questionsRight / questionsPosed) * 100) : 0;
     let gameMode = this.props.gameMode;
     let graph = <div id='graph'></div>;
+    let graph2 = <div id='graph2'></div>;
     let scoreBoard = <p>Your All-Time Score: {percentageRight}%<br />Your Score For This Game: {PercentageRightForThisGame}%</p>;
     // console.log(`questionsPosed: ${questionsPosed}, questionsRight: ${questionsRight}, percentageRight: ${percentageRight}, PercentageRightForThisGame: ${PercentageRightForThisGame}`);
 
@@ -378,8 +381,7 @@ class Stats extends Component {
       <div>
         <Carousel autoPlay stopOnHover={true} infinteLoop={true}>
           <div>
-            <img src="http://lorempixel.com/output/cats-q-c-640-480-1.jpg" />
-            <p className="legend">MEOW</p>
+            <img src="https://res.cloudinary.com/travelappcloud/image/upload/v1578619347/new_datapic_nps4au.jpg" />
           </div>
 
           <div className='leaderboard'>
@@ -397,7 +399,15 @@ class Stats extends Component {
               </tbody>
             </Table>
           </div>
-          <div>{graph}</div>
+          <div>
+            {graph}
+            <p className="legend">Your Scores Over Time</p>
+
+          </div>
+          <div>
+            {graph2}
+            <p className="legend">Your Best 3 Categories Compared to Other Users</p>
+          </div>
         </Carousel>
         <div className='scoreboard'>
           {scoreBoard}
