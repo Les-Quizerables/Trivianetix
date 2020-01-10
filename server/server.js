@@ -2,6 +2,15 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const PORT = 3000;
+
+const http = require('http');
+const socketIO = require('socket.io');
+const server = http.createServer(app);
+const io = socketIO(server);
+
+// const server = require('http').Server(app);
+// const io = require('socket.io')(server);
+
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const signupRouter = require('./routes/signup');
@@ -27,4 +36,30 @@ app.get('/build/bundle.js', (req, res) => {
   res.status(200).sendFile(path.resolve(__dirname, '../build/bundle.js'));
 });
 
-app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+// function handler (req, res) {
+//   fs.readFile('/Users/jie-yuncheng/Desktop/Trivianetix/client/profile.html',
+//   function (err, data) {
+//     if (err) {
+//       res.writeHead(500);
+//       return res.end('Error loading profile.html');
+//     }
+//     res.writeHead(200);
+//     res.end(data);
+//   });
+// }
+
+io.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+
+  socket.on('chat messages', function (message) {
+    console.log('message from the server: ', message);
+    io.emit('chat messages', message);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+});
+
+// server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+server.listen(PORT, () => console.log(`Listening on port ${PORT}`));

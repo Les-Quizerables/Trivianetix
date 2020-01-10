@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import UserInfo from "./UserInfo.jsx";
 import Stats from "./Stats.jsx";
 import GameContainer from "./GameContainer.jsx";
+import Draggable from 'react-draggable';
+import { useHistory } from 'react-router-dom';
+import { Button } from 'semantic-ui-react';
+
 
 class App extends Component {
   constructor(props) {
@@ -190,6 +194,12 @@ class App extends Component {
       })
   }
 
+  chatting() {
+    let path = `http://localhost:8008`;
+    let history = useHistory();
+    history.push(path);
+  }
+
   render() {
     return (
       <div className="app">
@@ -237,6 +247,11 @@ class App extends Component {
               handleChange={this.handleChange} />
           </React.Fragment>}
         {/* ================================================================= */}
+        {/* <Link to="http://localhost:8008">
+            <Button style={myStyle}>
+                <p>Click Me!</p>
+            </Button>
+        </Link> */}
       </div>
     );
   }
