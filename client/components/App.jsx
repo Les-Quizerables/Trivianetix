@@ -60,20 +60,20 @@ class App extends Component {
     let correctAnswers = this.state.stats.correctAnswers;
     let gamesPlayed = this.state.stats.gamesPlayed * 10;
     if (gamesPlayed > 0) {
-      let scoreCal = (correctAnswers/ gamesPlayed) * 100;
+      let scoreCal = (correctAnswers / gamesPlayed) * 100;
       this.setState({
         score: scoreCal,
-      });  
-    }  
+      });
+    }
   }
 
   settingScoreResponse() {
     let correctAnswers = this.state.stats.correctAnswers;
     let gamesPlayed = this.state.stats.gamesPlayed * 10;
-    let scoreCal = (correctAnswers/ gamesPlayed) * 100;
-      this.setState({
-        score: scoreCal,
-      },this.sendResponse);
+    let scoreCal = (correctAnswers / gamesPlayed) * 100;
+    this.setState({
+      score: scoreCal,
+    }, this.sendResponse);
   }
 
   // Wait until server is working to test correct data
@@ -90,7 +90,7 @@ class App extends Component {
         }, this.settingScore);
       })
       .catch((err) => { console.log(err); });
-      
+
   }
 
   onHandleClick(e) {
@@ -152,12 +152,12 @@ class App extends Component {
     if (this.state.results.length > 0) {
       this.startGame();
     } else {
-      const stats = {...this.state.stats};
+      const stats = { ...this.state.stats };
       stats.correctAnswers = stats.correctAnswers + this.state.correctResponses.length;
       stats.gamesPlayed = stats.gamesPlayed + 1;
       this.setState({
         stats,
-      },this.settingScoreResponse
+      }, this.settingScoreResponse
       );
       gameMode = false;
     }
@@ -169,7 +169,7 @@ class App extends Component {
     });
   }
 
-  sendResponse() { 
+  sendResponse() {
     console.log('Sending Response...');
     fetch('/profile/update', {
       method: 'PUT',
