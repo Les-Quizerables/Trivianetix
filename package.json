@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node ./server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "NODE_ENV=development & nodemon server/server.js & webpack-dev-server --open",
-    "build": "NODE_ENV=production & webpack"
+    "dev": "NODE_ENV=development nodemon server/server.js & webpack-dev-server --open",
+    "build": "NODE_ENV=production webpack"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
     "@babel/preset-env": "^7.7.7",
     "@babel/preset-react": "^7.7.4",
     "babel-loader": "^8.0.6",
+<<<<<<< HEAD
     "body-parser": "^1.19.0",
     "bootstrap": "^4.4.1",
     "cookie-parser": "^1.4.4",
@@ -32,6 +33,9 @@
     "fs": "0.0.1-security",
     "jquery": "^1.9.1",
     "node-fetch": "^2.6.0",
+=======
+    "express": "^4.17.1",
+>>>>>>> master
     "path": "^0.12.7",
     "pg": "^7.17.0",
     "react": "^16.12.0",

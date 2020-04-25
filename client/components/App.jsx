@@ -253,7 +253,7 @@ class App extends Component {
             </Button>
         </Link> */}
       </div>
-    );
+    )
   }
 }
 
