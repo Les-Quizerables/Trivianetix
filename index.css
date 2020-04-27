@@ -1,9 +1,9 @@
 
 body {
-  background: url(https://www.faarmembers.com/wp-content/uploads/2019/01/trivia-background.jpg);
-  background-size: auto;                      
+  background-color: #fdd365;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
-  background-position: center; 
+  /* background-position: center; */
 }
 
 .sign-in {
@@ -207,5 +207,3 @@ body {
 .no-placeholder .sign-in label {
   display: block;
 }
-
-
