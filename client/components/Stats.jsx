@@ -15,11 +15,33 @@ class Stats extends Component {
       categories: [],
       scores: [],
       messages: [],
-      message: ''
+      message: '',
+      categoryMap: {
+        9: 'General Knowledge',
+        10: 'Books',
+        11: 'Film',
+        12: 'Music',
+        13: 'Musicals and Theater',
+        14: 'Television',
+        15: 'Video Games',
+        16: 'Board Games',
+        17: 'Science and Nature',
+        18: 'Computers',
+        19: 'Mathematics',
+        20: 'Mythology',
+        21: 'Sports',
+        22: 'Geography',
+        23: 'History',
+        24: 'Politics',
+        25: 'Art',
+        26: 'Celebrities',
+        27: 'Animals'
+      }
     };
     this.startChatting = this.startChatting.bind(this);
     this.saveCurrMsg = this.saveCurrMsg.bind(this);
   }
+
   componentDidMount() {
     fetch('/profile/getLeaders')
       .then(res => res.json())
@@ -35,7 +57,6 @@ class Stats extends Component {
     fetch(`/Trivia/${this.props.username}`)
       .then(res => res.json())
       .then((res) => {
-        // Constructing data of graph 
         let models = [];
         let topCat = [0, 0];
         let topCat2 = [0, 0];
@@ -45,8 +66,7 @@ class Stats extends Component {
         let model3 = { "model_name": "Bachelors" };
         let model4 = { "model_name": "Masters" };
 
-        //try to get this user's top 3 categories
-        //topcat = [category, score]
+        // get current user's top 3 categories, topcat = [category, score]
         let keys = Object.keys(res.currentuser)
         for (let i = 0; i < keys.length; i += 1) {
           let key = keys[i];
@@ -54,17 +74,16 @@ class Stats extends Component {
             topCat3 = topCat2;
             topCat2 = topCat;
             topCat = [key, res.currentuser[key]]
-          }
-          else if (res.currentuser[key] > topCat2[1]) {
+          } else if (res.currentuser[key] > topCat2[1]) {
             topCat3 = topCat2;
             topCat2 = [key, res.currentuser[key]];
-          }
-          else if (res.currentuser[key] > topCat3[1]) {
+          } else if (res.currentuser[key] > topCat3[1]) {
             topCat3 = [key, res.currentuser[key]];
           }
         }
-        let topCats = [topCat, topCat2, topCat3]
 
+        // construct models for different education levels
+        let topCats = [topCat, topCat2, topCat3];
         for (let i = 0; i < 3; i += 1) {
           let userCategory = res.currentuser[parseInt(topCats[i][0])];
           model1[`field${i + 1}`] = userCategory;
@@ -81,10 +100,10 @@ class Stats extends Component {
           let userCategory = res.users.MA[parseInt(topCats[i][0])];
           model4[`field${i + 1}`] = userCategory;
         }
-        models.push(model1, model2, model3, model4)
-        // this.drawChart(models);
+        models.push(model1, model2, model3, model4);
+        const categories = [`${this.state.categoryMap[topCats[0][0]]}`, `${this.state.categoryMap[topCats[1][0]]}`, `${this.state.categoryMap[topCats[2][0]]}`];
 
-        // Constructing graph of second graph
+        // generate data needed to construct graph of score over time
         let graph = res.graph2;
         let graphArray = [];
         let date;
@@ -94,41 +113,17 @@ class Stats extends Component {
           nps = Number(graph[key].correct_answers) * 10;
           graphArray.push({ 'date': date, 'nps': nps });
         }
-        let categoryOptions = {
-          9: 'General Knowledge',
-          10: 'Books',
-          11: 'Film',
-          12: 'Music',
-          13: 'Musicals and Theater',
-          14: 'Television',
-          15: 'Video Games',
-          16: 'Board Games',
-          17: 'Science and Nature',
-          18: 'Computers',
-          19: 'Mathematics',
-          20: 'Mythology',
-          21: 'Sports',
-          22: 'Geography',
-          23: 'History',
-          24: 'Politics',
-          25: 'Art',
-          26: 'Celebrities',
-          27: 'Animals',
-        }
-        let categories = [`${categoryOptions[topCats[0][0]]}`, `${categoryOptions[topCats[1][0]]}`, `${categoryOptions[topCats[2][0]]}`]
         this.drawChart(models, graphArray, categories);
       })
       .catch(err => console.log(err));
   }
+
   drawChart(data, data2, categories) {
     let models = data;
     let lineData = data2;
-    let height = 600;
-    let width = 700;
     let margin = { top: 50, right: 25, bottom: 125, left: 25 };
-
-    width = width - margin.left - margin.right;
-    height = height - margin.top - margin.bottom;
+    let height = 600 - margin.top - margin.bottom;
+    let width = 700 - margin.left - margin.right;
 
     const svg = d3.select('#graph').append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -138,7 +133,6 @@ class Stats extends Component {
       .attr("fill", "none")
       .attr("stroke", "#000");
 
-    // set the ranges
     let x = d3.scaleTime().range([0, width]);
     x.domain(d3.extent(lineData, function (d) { return d.date; }));
     let y = d3.scaleLinear().range([height, 0]);
@@ -255,9 +249,9 @@ class Stats extends Component {
     svg2.append("circle").attr("cx", -10).attr("cy", -70).attr("r", 6).style("fill", "blue");
     svg2.append("circle").attr("cx", -10).attr("cy", -50).attr("r", 6).style("fill", "red");
     svg2.append("circle").attr("cx", -10).attr("cy", -30).attr("r", 6).style("fill", "green");
-    svg2.append("text").attr("x", 0).attr("y", -70).text(`Gametype: ${categories[0]}`).style("font-size", "15px").style("fill", "blue").attr("alignment-baseline", "middle").style("font", "20px times");
-    svg2.append("text").attr("x", 0).attr("y", -50).text(`Gametype: ${categories[1]}`).style("font-size", "15px").style("fill", "red").attr("alignment-baseline", "middle").style("font", "20px times");
-    svg2.append("text").attr("x", 0).attr("y", -30).text(`Gametype: ${categories[2]}`).style("font-size", "15px").style("fill", "green").attr("alignment-baseline", "middle").style("font", "20px times");
+    svg2.append("text").attr("x", 0).attr("y", -70).text(`Category: ${categories[0]}`).style("font-size", "15px").style("fill", "blue").attr("alignment-baseline", "middle").style("font", "20px times");
+    svg2.append("text").attr("x", 0).attr("y", -50).text(`Category: ${categories[1]}`).style("font-size", "15px").style("fill", "red").attr("alignment-baseline", "middle").style("font", "20px times");
+    svg2.append("text").attr("x", 0).attr("y", -30).text(`Category: ${categories[2]}`).style("font-size", "15px").style("fill", "green").attr("alignment-baseline", "middle").style("font", "20px times");
   }
 
   startChatting(message) {
@@ -292,34 +286,14 @@ class Stats extends Component {
     let graph2 = <div id='graph2'></div>;
     let scoreBoard = <p>Your All-Time Score: {percentageRight}%<br />Your Score For This Game: {PercentageRightForThisGame}%</p>;
 
-    const categoryMap = {
-      9: 'General Knowledge',
-      10: 'Books',
-      11: 'Film',
-      12: 'Music',
-      13: 'Musicals and Theater',
-      14: 'Television',
-      15: 'Video Games',
-      16: 'Board Games',
-      17: 'Science and Nature',
-      18: 'Computers',
-      19: 'Mathematics',
-      20: 'Mythology',
-      21: 'Sports',
-      22: 'Geography',
-      23: 'History',
-      24: 'Politics',
-      25: 'Art',
-      26: 'Celebrities',
-      27: 'Animals'
-    };
+    
     const leaderBoard = [];
     for (let i = 0; i <= 10; i += 1) {
       let eachLeader = (
         <tr key={i}>
           <td>{this.state.rankings[i]}</td>
           <td>{this.state.usernames[i]}</td>
-          <td>{categoryMap[this.state.categories[i]]}</td>
+          <td>{this.state.categoryMap[this.state.categories[i]]}</td>
           <td>{this.state.scores[i]}</td>
         </tr>
       );
@@ -333,7 +307,7 @@ class Stats extends Component {
             <Table striped bordered hover className="center">
               <thead>
                 <tr>
-                  <th>Ranking</th>
+                  <th>Rank</th>
                   <th>Username</th>
                   <th>Category</th>
                   <th>Score</th>
@@ -350,7 +324,7 @@ class Stats extends Component {
           </div>
           <div className="d3-graph">
             {graph2}
-            <p className="legend">Your Best 3 Categories Against Others</p>
+            <p className="legend">Your Highest-Scored Categories</p>
           </div>
         </Carousel>
         <div className='scoreboard'>
