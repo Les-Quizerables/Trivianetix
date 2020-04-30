@@ -7,7 +7,6 @@ module.exports = {
     filename: 'bundle.js',
   },
   devServer: {
-    // contentBase: path.resolve(__dirname, "build")
     publicPath: "/build/",
     port: 8080,
     proxy: {
