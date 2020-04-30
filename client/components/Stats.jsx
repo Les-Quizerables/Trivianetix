@@ -136,9 +136,7 @@ class Stats extends Component {
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
       .attr("fill", "none")
-      .attr("stroke", "#000")
-      .attr("border-radius", "5px")
-      .attr("style", "outline: thick solid black;");
+      .attr("stroke", "#000");
 
     // set the ranges
     let x = d3.scaleTime().range([0, width]);
@@ -188,9 +186,9 @@ class Stats extends Component {
 
     //NEW GRAPH
     let container = d3.select('#graph2'),
-      width2 = 920,
+      width2 = 700,
       height2 = 600,
-      margin2 = { top: 100, right: 120, bottom: 130, left: 150 },
+      margin2 = { top: 100, right: 25, bottom: 130, left: 45 },
       barPadding = .2,
       axisTicks = { qty: 5, outerSize: 0, dateFormat: '%m-%d' };
     let svg2 = container
@@ -198,9 +196,7 @@ class Stats extends Component {
       .attr("width", width2)
       .attr("height", height2)
       .append("g")
-      .attr("transform", `translate(${margin2.left},${margin2.top})`)
-      .attr("border-radius", "5px")
-      .attr("style", "outline: thick solid black;");
+      .attr("transform", `translate(${margin2.left},${margin2.top})`);
 
     let xScale0 = d3.scaleBand().range([0, width2 - margin2.left - margin2.right]).padding(barPadding);
     let xScale1 = d3.scaleBand();
@@ -208,7 +204,7 @@ class Stats extends Component {
     let xAxis = d3.axisBottom(xScale0).tickSizeOuter(axisTicks.outerSize);
     let yAxis = d3.axisLeft(yScale).ticks(axisTicks.qty).tickSizeOuter(axisTicks.outerSize);
     xScale0.domain(models.map(d => d.model_name));
-    xScale1.domain(['field1', 'field2', 'field3', 'field4']).range([0, xScale0.bandwidth()]);
+    xScale1.domain(['field1', 'field2', 'field3']).range([0, xScale0.bandwidth()]);
     yScale.domain([0, 100]);
     let model_name = svg2.selectAll(".model_name")
       .data(models)
@@ -333,8 +329,8 @@ class Stats extends Component {
     return (
       <div>
         <Carousel autoPlay={true} stopOnHover={true} infinteLoop={true} showStatus	={false} showIndicators={false} showThumbs={false}>
-          <div className='leaderboard'>
-            <Table striped bordered hover className='center'>
+          <div className="leaderboard">
+            <Table striped bordered hover className="center">
               <thead>
                 <tr>
                   <th>Ranking</th>
@@ -348,11 +344,11 @@ class Stats extends Component {
               </tbody>
             </Table>
           </div>
-          <div>
+          <div className="d3-graph">
             {graph}
             <p className="legend">Your Scores Over Time</p>
           </div>
-          <div>
+          <div className="d3-graph">
             {graph2}
             <p className="legend">Your Best 3 Categories Against Others</p>
           </div>
