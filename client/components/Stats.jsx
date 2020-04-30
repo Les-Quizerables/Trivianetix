@@ -188,13 +188,12 @@ class Stats extends Component {
 
     svg2.append("g").attr("class", "x axis").style("font", "20px times").attr("transform", `translate(0,${height2 - margin2.top - margin2.bottom})`).call(xAxis);
     svg2.append("g").attr("class", "y axis").style("font", "20px times").call(yAxis);
-    svg2.append("circle").attr("cx", -10).attr("cy", -70).attr("r", 6).style("fill", "blue");
-    svg2.append("circle").attr("cx", -10).attr("cy", -50).attr("r", 6).style("fill", "red");
-    svg2.append("circle").attr("cx", -10).attr("cy", -30).attr("r", 6).style("fill", "green");
-    svg2.append("text").attr("x", 0).attr("y", -70).text(`Category: ${categories[0]}`).style("font-size", "15px").style("fill", "blue").attr("alignment-baseline", "middle").style("font", "20px times");
-    svg2.append("text").attr("x", 0).attr("y", -50).text(`Category: ${categories[1]}`).style("font-size", "15px").style("fill", "red").attr("alignment-baseline", "middle").style("font", "20px times");
-    svg2.append("text").attr("x", 0).attr("y", -30).text(`Category: ${categories[2]}`).style("font-size", "15px").style("fill", "green").attr("alignment-baseline", "middle").style("font", "20px times");
-    
+    const colors = ['blue', 'red', 'green'];
+    for (let cy = -70, y = -70, i = 0; categories[i] !== "undefined"; i += 1, cy += 20, y += 20) {
+      svg2.append("circle").attr("cx", -10).attr("cy", cy).attr("r", 6).style("fill", colors[i]);
+      svg2.append("text").attr("x", 0).attr("y", y).text(`Category: ${categories[i]}`).style("font-size", "15px").style("fill", colors[i]).attr("alignment-baseline", "middle").style("font", "20px times");
+    }
+
     // second graph models
     const model_name = svg2.selectAll(".model_name")
       .data(models)
@@ -212,7 +211,7 @@ class Stats extends Component {
         .attr("x", d => xScale1(fieldName))
         .attr("y", d => yScale(d[fieldName]))
         .attr("width", xScale1.bandwidth())
-        .attr("height", d => height2 - margin2.top - margin2.bottom - yScale(d[fieldName]));
+        .attr("height", d => d[fieldName] === undefined ? 0 : height2 - margin2.top - margin2.bottom - yScale(d[fieldName]));
       }
     };
     constructModel([{ fieldName: 'field1', color: 'blue'}, { fieldName: 'field2', color: 'red'}, { fieldName: 'field3', color: 'green'}]);
