@@ -57,19 +57,19 @@ class Stats extends Component {
     fetch(`/Trivia/${this.props.username}`)
       .then(res => res.json())
       .then((res) => {
-        let models = [];
+        const models = [];
         let topCat = [0, 0];
         let topCat2 = [0, 0];
         let topCat3 = [0, 0];
-        let model1 = { "model_name": "Your scores" };
-        let model2 = { "model_name": "High School" };
-        let model3 = { "model_name": "Bachelors" };
-        let model4 = { "model_name": "Masters" };
+        const model1 = { "model_name": "Your scores" };
+        const model2 = { "model_name": "High School" };
+        const model3 = { "model_name": "Bachelors" };
+        const model4 = { "model_name": "Masters" };
 
         // get current user's top 3 categories, topcat = [category, score]
-        let keys = Object.keys(res.currentuser)
+        const keys = Object.keys(res.currentuser)
         for (let i = 0; i < keys.length; i += 1) {
-          let key = keys[i];
+          const key = keys[i];
           if (res.currentuser[key] > topCat[1]) {
             topCat3 = topCat2;
             topCat2 = topCat;
@@ -83,35 +83,21 @@ class Stats extends Component {
         }
 
         // construct models for different education levels
-        let topCats = [topCat, topCat2, topCat3];
+        const topCats = [topCat, topCat2, topCat3];
         for (let i = 0; i < 3; i += 1) {
-          let userCategory = res.currentuser[parseInt(topCats[i][0])];
-          model1[`field${i + 1}`] = userCategory;
-        }
-        for (let i = 0; i < 3; i += 1) {
-          let userCategory = res.users.SE[parseInt(topCats[i][0])];
-          model2[`field${i + 1}`] = userCategory;
-        }
-        for (let i = 0; i < 3; i += 1) {
-          let userCategory = res.users.BA[parseInt(topCats[i][0])];
-          model3[`field${i + 1}`] = userCategory;
-        }
-        for (let i = 0; i < 3; i += 1) {
-          let userCategory = res.users.MA[parseInt(topCats[i][0])];
-          model4[`field${i + 1}`] = userCategory;
+          model1[`field${i + 1}`] = res.currentuser[parseInt(topCats[i][0])];
+          model2[`field${i + 1}`] = res.users.SE[parseInt(topCats[i][0])];
+          model3[`field${i + 1}`] = res.users.BA[parseInt(topCats[i][0])];
+          model4[`field${i + 1}`] = res.users.MA[parseInt(topCats[i][0])];
         }
         models.push(model1, model2, model3, model4);
         const categories = [`${this.state.categoryMap[topCats[0][0]]}`, `${this.state.categoryMap[topCats[1][0]]}`, `${this.state.categoryMap[topCats[2][0]]}`];
 
         // generate data needed to construct graph of score over time
-        let graph = res.graph2;
-        let graphArray = [];
-        let date;
-        let nps;
+        const graph = res.graph2;
+        const graphArray = [];
         for (let key in graph) {
-          date = new Date(graph[key].to_char);
-          nps = Number(graph[key].correct_answers) * 10;
-          graphArray.push({ 'date': date, 'nps': nps });
+          graphArray.push({ 'date': new Date(graph[key].to_char), 'nps': Number(graph[key].correct_answers) * 10 });
         }
         this.drawChart(models, graphArray, categories);
       })
@@ -137,18 +123,16 @@ class Stats extends Component {
     x.domain(d3.extent(lineData, function (d) { return d.date; }));
     let y = d3.scaleLinear().range([height, 0]);
     y.domain([d3.min(lineData, function (d) { return d.nps; }) - 5, 100]);
-
     let valueline = d3.line()
       .x(function (d) { return x(d.date); })
       .y(function (d) { return y(d.nps); })
       .curve(d3.curveMonotoneX);
+    let xAxis_woy = d3.axisBottom(x).tickFormat(d3.timeFormat("%m/%d ")).tickValues(lineData.map(d => d.date));
 
     svg.append("path")
       .data([lineData])
       .attr("class", "line")
       .attr("d", valueline);
-
-    let xAxis_woy = d3.axisBottom(x).tickFormat(d3.timeFormat("%m/%d ")).tickValues(lineData.map(d => d.date));
 
     svg.append("g")
       .attr("class", "x axis")
@@ -158,8 +142,8 @@ class Stats extends Component {
     svg.selectAll(".dot")
       .data(lineData)
       .enter()
-      .append("circle") // Uses the enter().append() method
-      .attr("class", "dot") // Assign a class for styling
+      .append("circle")
+      .attr("class", "dot")
       .attr("cx", function (d) { return x(d.date) })
       .attr("cy", function (d) { return y(d.nps) })
       .attr("r", 5)
@@ -168,8 +152,8 @@ class Stats extends Component {
     svg.selectAll(".text")
       .data(lineData)
       .enter()
-      .append("text") // Uses the enter().append() method
-      .attr("class", "label") // Assign a class for styling
+      .append("text")
+      .attr("class", "label")
       .attr("x", function (d, i) { return x(d.date) })
       .attr("y", function (d) { return y(d.nps + 1) })
       .attr("dy", "-5")
@@ -182,9 +166,10 @@ class Stats extends Component {
     let container = d3.select('#graph2'),
       width2 = 700,
       height2 = 600,
-      margin2 = { top: 100, right: 25, bottom: 130, left: 45 },
       barPadding = .2,
+      margin2 = { top: 100, right: 25, bottom: 130, left: 45 },
       axisTicks = { qty: 5, outerSize: 0, dateFormat: '%m-%d' };
+
     let svg2 = container
       .append("svg")
       .attr("width", width2)
@@ -200,6 +185,7 @@ class Stats extends Component {
     xScale0.domain(models.map(d => d.model_name));
     xScale1.domain(['field1', 'field2', 'field3']).range([0, xScale0.bandwidth()]);
     yScale.domain([0, 100]);
+
     let model_name = svg2.selectAll(".model_name")
       .data(models)
       .enter().append("g")
@@ -246,6 +232,7 @@ class Stats extends Component {
       .attr("class", "y axis")
       .style("font", "20px times")
       .call(yAxis);
+
     svg2.append("circle").attr("cx", -10).attr("cy", -70).attr("r", 6).style("fill", "blue");
     svg2.append("circle").attr("cx", -10).attr("cy", -50).attr("r", 6).style("fill", "red");
     svg2.append("circle").attr("cx", -10).attr("cy", -30).attr("r", 6).style("fill", "green");
@@ -285,7 +272,6 @@ class Stats extends Component {
     let graph = <div id='graph'></div>;
     let graph2 = <div id='graph2'></div>;
     let scoreBoard = <p>Your All-Time Score: {percentageRight}%<br />Your Score For This Game: {PercentageRightForThisGame}%</p>;
-
     
     const leaderBoard = [];
     for (let i = 0; i <= 10; i += 1) {
@@ -318,11 +304,11 @@ class Stats extends Component {
               </tbody>
             </Table>
           </div>
-          <div className="d3-graph">
+          <div>
             {graph}
             <p className="legend">Your Scores Over Time</p>
           </div>
-          <div className="d3-graph">
+          <div>
             {graph2}
             <p className="legend">Your Highest-Scored Categories</p>
           </div>
