@@ -1,17 +1,13 @@
 import React, { Component } from "react";
+import { useHistory } from 'react-router-dom';
 import UserInfo from "./UserInfo.jsx";
 import Stats from "./Stats.jsx";
 import GameContainer from "./GameContainer.jsx";
-import Draggable from 'react-draggable';
-import { useHistory } from 'react-router-dom';
-import { Button } from 'semantic-ui-react';
-
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      //ACTUAL DEFAULT
       username: document.cookie.slice(9),
       gameMode: false,
       results: [],
@@ -22,35 +18,8 @@ class App extends Component {
       choice: 'none',
       url: '9',
       score: 0,
-      //MOCK DATA
-      // username: document.cookie.slice(9),
-      // gameMode: false,
-      // results: [
-      //   {
-      //     category: "General Knowledge",
-      //     type: "multiple",
-      //     difficulty: "easy",
-      //     question: "Which one of these Swedish companies was founded in 1943?",
-      //     correct_answer: "IKEA",
-      //     incorrect_answers: ["H &; M", "Lindex", "Clas Ohlson"]
-      //   },
-      //   {
-      //     category: "General Knowledge",
-      //     type: "multiple",
-      //     difficulty: "easy",
-      //     question: "Which one of these Swedish companies was founded in 1943?",
-      //     correct_answer: "IKEA",
-      //     incorrect_answers: ["H &; M", "Lindex", "Clas Ohlson"]
-      //   }
-      // ],
-      // stats: { gamesPlayed: 5, correctAnswers: 12 },
-      // correctResponses: [],
-      // incorrectResponses: [],
-      // question:{},
-      // choice: 'none',
     };
 
-    // Function binds=================================================
     this.startGame = this.startGame.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.onHandleClick = this.onHandleClick.bind(this);
@@ -59,7 +28,6 @@ class App extends Component {
     this.sendResponse = this.sendResponse.bind(this);
   }
 
-  // Setting the score state after stats state is set
   settingScore() {
     let correctAnswers = this.state.stats.correctAnswers;
     let gamesPlayed = this.state.stats.gamesPlayed * 10;
@@ -80,9 +48,7 @@ class App extends Component {
     }, this.sendResponse);
   }
 
-  // Wait until server is working to test correct data
   componentDidMount() {
-    console.log('MOUNTED');
     fetch(`/trivia/${this.state.username}/${this.state.url}`)
       .then(res => res.json())
       .then(data => {
@@ -94,7 +60,6 @@ class App extends Component {
         }, this.settingScore);
       })
       .catch((err) => { console.log(err); });
-
   }
 
   onHandleClick(e) {
@@ -136,23 +101,20 @@ class App extends Component {
     }
   }
 
-  // Manages behaviour while playing the game, wheather start game, end game and send results and 
-  // setState between games
+  // handles start game, end game, next question, send result, and setState between games
   handleChange(e) {
     let gameMode = this.state.gameMode;
     const choice = e.target.value;
     const correct = this.state.question.correct_answer;
     const correctResponses = [...this.state.correctResponses];
     const incorrectResponses = [...this.state.incorrectResponses];
-    // console.log('User chose the answer: ', e.target.value);
-    // console.log('The actual correct answer: ', correct);
-    // console.log('correctResponses: ', this.state.correctResponses);
 
     if (choice === correct) {
       correctResponses.push(this.state.question);
     } else {
       incorrectResponses.push(this.state.question);
     }
+
     if (this.state.results.length > 0) {
       this.startGame();
     } else {
@@ -165,6 +127,7 @@ class App extends Component {
       );
       gameMode = false;
     }
+
     e.target.checked = false;
     this.setState({
       gameMode,
@@ -174,7 +137,6 @@ class App extends Component {
   }
 
   sendResponse() {
-    console.log('Sending Response...');
     fetch('/profile/update', {
       method: 'PUT',
       headers: {
@@ -189,9 +151,9 @@ class App extends Component {
         gamesPlayed: this.state.stats.gamesPlayed,
       }),
     })
-      .catch(err => {
-        console.log(err);
-      })
+    .catch(err => {
+      console.log(err);
+    });
   }
 
   chatting() {
@@ -203,10 +165,9 @@ class App extends Component {
   render() {
     return (
       <div className="app">
-        {/* ===================================================================================== */}
-        {/* When User is logged in, and gameMode=false, render UserInfo, Stats, and GameContainer */}
-        {/* ===================================================================================== */}
-        {!this.state.gameMode ?
+        {
+          !this.state.gameMode ?
+          // When User is logged in, and gameMode=false, render UserInfo, Stats, and GameContainer
           <React.Fragment>
             <UserInfo username={this.state.username} gameMode={this.state.gameMode} />
             <Stats username={this.state.username} stats={this.state.stats} correctResponses={this.state.correctResponses} gameMode={this.state.gameMode} />
@@ -234,9 +195,7 @@ class App extends Component {
             <button className="playGameBtn" onClick={() => this.startGame()}>Play Game</button>
           </React.Fragment>
           :
-          //*================================================================= */}
-          //* When User is logged in, and gameMode=true, render GameContainer */}
-          //*================================================================= */}
+          // When User is logged in, and gameMode=true, render GameContainer
           <React.Fragment>
             <GameContainer
               onHandleClick={this.onHandleClick}
@@ -245,15 +204,10 @@ class App extends Component {
               gameMode={this.state.gameMode}
               question={this.state.question}
               handleChange={this.handleChange} />
-          </React.Fragment>}
-        {/* ================================================================= */}
-        {/* <Link to="http://localhost:8008">
-            <Button style={myStyle}>
-                <p>Click Me!</p>
-            </Button>
-        </Link> */}
+          </React.Fragment>
+        }
       </div>
-    )
+    );
   }
 }
 
