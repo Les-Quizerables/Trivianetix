@@ -82,7 +82,7 @@ class Stats extends Component {
           }
         }
 
-        // construct models for different education levels
+        // generate data needed to construct graph for different education levels
         const topCats = [topCat, topCat2, topCat3];
         for (let i = 0; i < 3; i += 1) {
           model1[`field${i + 1}`] = res.currentuser[parseInt(topCats[i][0])];
@@ -99,18 +99,33 @@ class Stats extends Component {
         for (let key in graph) {
           graphArray.push({ 'date': new Date(graph[key].to_char), 'nps': Number(graph[key].correct_answers) * 10 });
         }
+
+        // draw both d3 graphs
         this.drawChart(models, graphArray, categories);
       })
       .catch(err => console.log(err));
   }
 
   drawChart(data, data2, categories) {
-    let models = data;
-    let lineData = data2;
-    let margin = { top: 50, right: 25, bottom: 125, left: 25 };
-    let height = 600 - margin.top - margin.bottom;
-    let width = 700 - margin.left - margin.right;
-
+    // first graph configuration
+    const models = data;
+    const lineData = data2;
+    const margin = { top: 50, right: 25, bottom: 125, left: 25 };
+    const height = 600 - margin.top - margin.bottom;
+    const width = 700 - margin.left - margin.right;
+    
+    // first graph axis
+    const x = d3.scaleTime().range([0, width]);
+    x.domain(d3.extent(lineData, function (d) { return d.date; }));
+    const y = d3.scaleLinear().range([height, 0]);
+    y.domain([d3.min(lineData, function (d) { return d.nps; }) - 5, 100]);
+    const valueline = d3.line()
+      .x(function (d) { return x(d.date); })
+      .y(function (d) { return y(d.nps); })
+      .curve(d3.curveMonotoneX);
+    const xAxis_woy = d3.axisBottom(x).tickFormat(d3.timeFormat("%m/%d ")).tickValues(lineData.map(d => d.date));
+    
+    // first graph svg
     const svg = d3.select('#graph').append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
@@ -119,25 +134,8 @@ class Stats extends Component {
       .attr("fill", "none")
       .attr("stroke", "#000");
 
-    let x = d3.scaleTime().range([0, width]);
-    x.domain(d3.extent(lineData, function (d) { return d.date; }));
-    let y = d3.scaleLinear().range([height, 0]);
-    y.domain([d3.min(lineData, function (d) { return d.nps; }) - 5, 100]);
-    let valueline = d3.line()
-      .x(function (d) { return x(d.date); })
-      .y(function (d) { return y(d.nps); })
-      .curve(d3.curveMonotoneX);
-    let xAxis_woy = d3.axisBottom(x).tickFormat(d3.timeFormat("%m/%d ")).tickValues(lineData.map(d => d.date));
-
-    svg.append("path")
-      .data([lineData])
-      .attr("class", "line")
-      .attr("d", valueline);
-
-    svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis_woy);
+    svg.append("path").data([lineData]).attr("class", "line").attr("d", valueline);
+    svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis_woy);
 
     svg.selectAll(".dot")
       .data(lineData)
@@ -162,83 +160,62 @@ class Stats extends Component {
       .attr("fill", "black")
       .text(function (d) { return d.nps; });
 
-    //NEW GRAPH
-    let container = d3.select('#graph2'),
+    // second graph configuration
+    const container = d3.select('#graph2'),
       width2 = 700,
       height2 = 600,
       barPadding = .2,
       margin2 = { top: 100, right: 25, bottom: 130, left: 45 },
       axisTicks = { qty: 5, outerSize: 0, dateFormat: '%m-%d' };
 
-    let svg2 = container
+    // second graph axis
+    const xScale0 = d3.scaleBand().range([0, width2 - margin2.left - margin2.right]).padding(barPadding);
+    const xScale1 = d3.scaleBand();
+    const yScale = d3.scaleLinear().range([height2 - margin2.top - margin2.bottom, 0]);
+    const xAxis = d3.axisBottom(xScale0).tickSizeOuter(axisTicks.outerSize);
+    const yAxis = d3.axisLeft(yScale).ticks(axisTicks.qty).tickSizeOuter(axisTicks.outerSize);
+    xScale0.domain(models.map(d => d.model_name));
+    xScale1.domain(['field1', 'field2', 'field3']).range([0, xScale0.bandwidth()]);
+    yScale.domain([0, 100]);
+
+    // second graph svg
+    const svg2 = container
       .append("svg")
       .attr("width", width2)
       .attr("height", height2)
       .append("g")
       .attr("transform", `translate(${margin2.left},${margin2.top})`);
 
-    let xScale0 = d3.scaleBand().range([0, width2 - margin2.left - margin2.right]).padding(barPadding);
-    let xScale1 = d3.scaleBand();
-    let yScale = d3.scaleLinear().range([height2 - margin2.top - margin2.bottom, 0]);
-    let xAxis = d3.axisBottom(xScale0).tickSizeOuter(axisTicks.outerSize);
-    let yAxis = d3.axisLeft(yScale).ticks(axisTicks.qty).tickSizeOuter(axisTicks.outerSize);
-    xScale0.domain(models.map(d => d.model_name));
-    xScale1.domain(['field1', 'field2', 'field3']).range([0, xScale0.bandwidth()]);
-    yScale.domain([0, 100]);
-
-    let model_name = svg2.selectAll(".model_name")
-      .data(models)
-      .enter().append("g")
-      .attr("class", "model_name")
-      .attr("transform", d => `translate(${xScale0(d.model_name)},0)`);
-
-    model_name.selectAll(".bar.field1")
-      .data(d => [d])
-      .enter()
-      .append("rect")
-      .attr("class", "bar field1")
-      .style("fill", "blue")
-      .attr("x", d => xScale1('field1'))
-      .attr("y", d => yScale(d.field1))
-      .attr("width", xScale1.bandwidth())
-      .attr("height", d => height2 - margin2.top - margin2.bottom - yScale(d.field1));
-    model_name.selectAll(".bar.field2")
-      .data(d => [d])
-      .enter()
-      .append("rect")
-      .attr("class", "bar field2")
-      .style("fill", "red")
-      .attr("x", d => xScale1('field2'))
-      .attr("y", d => yScale(d.field2))
-      .attr("width", xScale1.bandwidth())
-      .attr("height", d => height2 - margin2.top - margin2.bottom - yScale(d.field2));
-    model_name.selectAll(".bar.field3")
-      .data(d => [d])
-      .enter()
-      .append("rect")
-      .attr("class", "bar field3")
-      .style("fill", "green")
-      .attr("x", d => xScale1('field3'))
-      .attr("y", d => yScale(d.field3))
-      .attr("width", xScale1.bandwidth())
-      .attr("height", d => height2 - margin2.top - margin2.bottom - yScale(d.field3));
-
-    svg2.append("g")
-      .attr("class", "x axis")
-      .style("font", "20px times")
-      .attr("transform", `translate(0,${height2 - margin2.top - margin2.bottom})`)
-      .call(xAxis);
-    svg2.append("g")
-      .attr("class", "y axis")
-      .style("font", "20px times")
-      .call(yAxis);
-
+    svg2.append("g").attr("class", "x axis").style("font", "20px times").attr("transform", `translate(0,${height2 - margin2.top - margin2.bottom})`).call(xAxis);
+    svg2.append("g").attr("class", "y axis").style("font", "20px times").call(yAxis);
     svg2.append("circle").attr("cx", -10).attr("cy", -70).attr("r", 6).style("fill", "blue");
     svg2.append("circle").attr("cx", -10).attr("cy", -50).attr("r", 6).style("fill", "red");
     svg2.append("circle").attr("cx", -10).attr("cy", -30).attr("r", 6).style("fill", "green");
     svg2.append("text").attr("x", 0).attr("y", -70).text(`Category: ${categories[0]}`).style("font-size", "15px").style("fill", "blue").attr("alignment-baseline", "middle").style("font", "20px times");
     svg2.append("text").attr("x", 0).attr("y", -50).text(`Category: ${categories[1]}`).style("font-size", "15px").style("fill", "red").attr("alignment-baseline", "middle").style("font", "20px times");
     svg2.append("text").attr("x", 0).attr("y", -30).text(`Category: ${categories[2]}`).style("font-size", "15px").style("fill", "green").attr("alignment-baseline", "middle").style("font", "20px times");
+    
+    // second graph models
+    const model_name = svg2.selectAll(".model_name")
+      .data(models)
+      .enter().append("g")
+      .attr("class", "model_name")
+      .attr("transform", d => `translate(${xScale0(d.model_name)},0)`);
+    const constructModel = fieldNames => {
+      for (let { fieldName, color } of fieldNames) {
+        model_name.selectAll(".bar." + fieldName)
+        .data(d => [d])
+        .enter()
+        .append("rect")
+        .attr("class", "bar" + fieldName)
+        .style("fill", color)
+        .attr("x", d => xScale1(fieldName))
+        .attr("y", d => yScale(d[fieldName]))
+        .attr("width", xScale1.bandwidth())
+        .attr("height", d => height2 - margin2.top - margin2.bottom - yScale(d[fieldName]));
+      }
+    };
+    constructModel([{ fieldName: 'field1', color: 'blue'}, { fieldName: 'field2', color: 'red'}, { fieldName: 'field3', color: 'green'}]);
   }
 
   startChatting(message) {
