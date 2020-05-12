@@ -189,8 +189,8 @@ class Stats extends Component {
     svg2.append("g").attr("class", "x axis").style("font", "20px times").attr("transform", `translate(0,${height2 - margin2.top - margin2.bottom})`).call(xAxis);
     svg2.append("g").attr("class", "y axis").style("font", "20px times").call(yAxis);
     const colors = ['blue', 'red', 'green'];
-    for (let cy = -70, y = -70, i = 0; categories[i] !== "undefined"; i += 1, cy += 20, y += 20) {
-      svg2.append("circle").attr("cx", -10).attr("cy", cy).attr("r", 6).style("fill", colors[i]);
+    for (let y = -70, i = 0; categories[i] !== "undefined" && i < 3; i += 1, y += 20) {
+      svg2.append("circle").attr("cx", -10).attr("cy", y).attr("r", 6).style("fill", colors[i]);
       svg2.append("text").attr("x", 0).attr("y", y).text(`Category: ${categories[i]}`).style("font-size", "15px").style("fill", colors[i]).attr("alignment-baseline", "middle").style("font", "20px times");
     }
 
