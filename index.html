@@ -1,40 +1,38 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Trivianetix login page</title>
+  </head>
+  
+  <head>
+    <meta charset="utf-8">
+    <title> login page</title>
+    <link rel="stylesheet" href="./index.css">
+    <link href="https://fonts.googleapis.com/css?family=Luckiest+Guy&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Comfortaa&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Baloo+Bhai&display=swap" rel="stylesheet">
+  </head>
 
-<head>
-  <meta charset="utf-8" />
-  <title>Trivianetix login page</title>
-</head>
-
-<head>
-  <meta charset="utf-8">
-  <title> login page</title>
-  <link rel="stylesheet" href="./index.css">
-  <link href="https://fonts.googleapis.com/css?family=Luckiest+Guy&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Comfortaa&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Baloo+Bhai&display=swap" rel="stylesheet">
-</head>
-
-<body>
-  <form class="sign-in" action="/profile" method="POST">
-    <h1 id="loginHeader">Welcome to Les Quizerables!</h1>
-    <h2>Please Login</h2>
-    <p>
-      <label for="login">Username or email</label>
-      <input type="text" name="username" placeholder="Username or email" required>
-    </p>
-    <p>
-      <label for="password">Password</label>
-      <input type="password" name='password' placeholder="Password" required>
-    </p>
-    <p>
-      <input type="submit" name="submit" value="Log In">
-    </p>
-  </form>
-  <p id="first-time">First Time?</p>
-  <form class="sign-up" action="/signup" method="GET">
-    <input id='sign-up-button' type="submit" value="Sign Up Here!">
-  </form>
-</body>
-
+  <body>
+    <form class="sign-in" action="/profile" method="POST">
+      <h1 id="loginHeader">Welcome to Les Quizerables!</h1>
+      <h2>Please Login</h2>
+      <p>
+        <label for="login">Username or email</label>
+        <input type="text" name="username" placeholder="Username or email" required>
+      </p>
+      <p>
+        <label for="password">Password</label>
+        <input type="password" name='password' placeholder="Password" required>
+      </p>
+      <p>
+        <input type="submit" name="submit" value="Log In">
+      </p>
+    </form>
+    <p id="first-time">First Time?</p>
+    <form class="sign-up" action="/signup" method="GET">
+      <input id='sign-up-button' type="submit" value="Sign Up Here!">
+    </form>
+  </body>
 </html>

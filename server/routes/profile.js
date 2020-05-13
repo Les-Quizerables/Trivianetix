@@ -21,7 +21,7 @@ profile.post('/', userModelController.findUser, cookieController.setCookie, (req
   res.status(200).sendFile(path.resolve(__dirname, "../../client/profile.html"));
 });
 
-profile.put('/update', userModelController.updateUser,userModelController.findLeaders, userModelController.compareLeaders, (req, res) => {
+profile.put('/update', userModelController.updateUser, userModelController.findLeaders, userModelController.compareLeaders, (req, res) => {
   res.sendStatus(200);
 });
 
